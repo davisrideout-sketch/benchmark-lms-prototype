@@ -15,10 +15,12 @@ import Knowledge from './pages/Knowledge.jsx'
 import Article from './pages/Article.jsx'
 import Videos from './pages/Videos.jsx'
 import VideoPlayer from './pages/VideoPlayer.jsx'
+import Practice from './pages/Practice.jsx'
+import PracticeSession from './pages/PracticeSession.jsx'
 import { navItems } from './components/nav.js'
 
 const Page = ({ item }) => { const P = pages[item.path]; return P ? <P /> : <ComingSoon item={item} /> }
-const pages = { '/for-me': ForMe, '/catalogue': Catalogue, '/paths': Paths, '/achievements': Achievements, '/knowledge': Knowledge, '/videos': Videos }
+const pages = { '/for-me': ForMe, '/catalogue': Catalogue, '/paths': Paths, '/achievements': Achievements, '/knowledge': Knowledge, '/videos': Videos, '/practice': Practice }
 
 export default function App() {
   const { user } = useApp()
@@ -32,6 +34,7 @@ export default function App() {
             element={n.roles && !n.roles.includes(user.role) ? <Navigate to="/" replace /> : <Page item={n} />} />
         ))}
         <Route path="/knowledge/:aid" element={<Article />} />
+        <Route path="/practice/:sid" element={<PracticeSession />} />
         <Route path="/videos/:vid" element={<VideoPlayer />} />
         <Route path="/course/:cid" element={<Course />} />
         <Route path="/course/:cid/module/:i" element={<Module />} />

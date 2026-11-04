@@ -20,6 +20,8 @@ export function AppProvider({ children }) {
   const [enrolled, setEnrolled] = useState(() => read('blms.enrol.v1', []))
   const [vprog, setVprog] = useState(() => read('blms.video.v1', {}))
   const [votes, setVotes] = useState(() => read('blms.votes.v1', {}))
+  const [practice, setPractice] = useState(() => read('blms.practice.v1', {}))
+  useEffect(() => write('blms.practice.v1', practice), [practice])
   useEffect(() => write('blms.video.v1', vprog), [vprog])
   useEffect(() => write('blms.votes.v1', votes), [votes])
   useEffect(() => write(PROG_KEY, overrides), [overrides])
@@ -70,7 +72,9 @@ export function AppProvider({ children }) {
     setVideoSecs: (id, s) => setVprog((p) => ({ ...p, [`${userId}:${id}`]: s })),
     vote: (id) => votes[`${userId}:${id}`] ?? null,
     setVote: (id, v) => setVotes((p) => ({ ...p, [`${userId}:${id}`]: v })),
-    resetDemo: () => { setOverrides({}); setScores({}); setFavs({}); setEnrolled([]); setVprog({}); setVotes({}) },
+    practice: practice[userId] ?? [],
+    addPractice: (r) => setPractice((p) => ({ ...p, [userId]: [r, ...(p[userId] ?? [])].slice(0, 30) })),
+    resetDemo: () => { setPractice({}); setOverrides({}); setScores({}); setFavs({}); setEnrolled([]); setVprog({}); setVotes({}) },
     people,
   }
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>
