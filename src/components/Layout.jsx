@@ -27,7 +27,7 @@ export default function Layout() {
   return (
     <div className="flex min-h-screen">
       {/* Desktop sidebar */}
-      <aside className={`sticky top-0 hidden h-screen flex-col bg-brand-700 transition-all md:flex ${collapsed ? 'w-20' : 'w-64'}`}>
+      <aside className={`sticky top-0 hidden print:hidden h-screen flex-col bg-brand-700 transition-all md:flex ${collapsed ? 'w-20' : 'w-64'}`}>
         <div className={`flex h-16 items-center border-b border-white/10 px-4 ${collapsed ? 'justify-center' : 'justify-between'}`}>
           {!collapsed && <Wordmark light />}
           <button aria-label="Toggle navigation" onClick={() => setCollapsed(!collapsed)} className="rounded-lg p-2 text-brand-100 hover:bg-white/10">
@@ -52,7 +52,7 @@ export default function Layout() {
       )}
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-taupe-200 bg-white/90 px-4 backdrop-blur">
+        <header className="print:hidden sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-taupe-200 bg-white/90 px-4 backdrop-blur">
           <button aria-label="Open menu" onClick={() => setOpen(true)} className="rounded-lg p-2 hover:bg-taupe-100 md:hidden"><Menu size={22} /></button>
           <span className="md:hidden"><Wordmark /></span>
           <span className="hidden rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-800 sm:inline">Prototype – demo data</span>

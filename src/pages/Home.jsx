@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts'
+import { Link } from 'react-router-dom'
 import { PlayCircle, CheckCircle2, AlertTriangle, Clock, Trophy, ArrowRight } from 'lucide-react'
 import { useApp, statusOf, fmtDate, daysUntil } from '../store.jsx'
 import { courseById, courseMinutes } from '../data/courses.js'
@@ -22,7 +23,7 @@ function Card({ title, children, className = '' }) {
 }
 
 export default function Home() {
-  const { user, enrollments, advance } = useApp()
+  const { user, enrollments } = useApp()
   const mine = useMemo(() => enrollments.filter((e) => e.userId === user.id).map((e) => ({ ...e, course: courseById(e.courseId), status: statusOf(e) })), [enrollments, user.id])
 
   const counts = Object.keys(STATUS).map((k) => ({ key: k, ...STATUS[k], value: mine.filter((e) => e.status === k).length }))
@@ -73,9 +74,9 @@ export default function Home() {
                     <div className="mt-2 h-2 overflow-hidden rounded-full bg-taupe-100"><div className="h-full rounded-full bg-brand-500" style={{ width: `${(e.completedModules / n) * 100}%` }} /></div>
                     <div className="mt-1 text-xs text-taupe-700">{e.completedModules} of {n} modules · Next: {next.title}</div>
                   </div>
-                  <button onClick={() => advance(user.id, e.courseId)} className="flex items-center justify-center gap-2 rounded-xl bg-brand-500 px-4 py-2 text-sm font-bold text-white hover:bg-brand-600">
+                  <Link to={`/course/${e.courseId}/module/${e.completedModules}`} className="flex items-center justify-center gap-2 rounded-xl bg-brand-500 px-4 py-2 text-sm font-bold text-white hover:bg-brand-600">
                     <PlayCircle size={18} /> Continue
-                  </button>
+                  </Link>
                 </div>
               )
             })}
