@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Download } from 'lucide-react'
 import { BarChart, Bar as RBar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
@@ -9,6 +9,12 @@ import { scopePeople, buildRows, summarise, byCourse, byDivision, monthlyTrend, 
 
 const PURPLE = '#60529c', INK = '#2b2b2b'
 const tick = { fontSize: 12, fill: '#6f6358' }
+function useNarrow(px = 640) {
+  const q = `(max-width: ${px}px)`
+  const [n, setN] = useState(() => window.matchMedia(q).matches)
+  useEffect(() => { const m = window.matchMedia(q); const f = () => setN(m.matches); m.addEventListener('change', f); return () => m.removeEventListener('change', f) }, [q])
+  return n
+}
 
 export default function Reports() {
   const { user, enrollments } = useApp()
@@ -24,6 +30,7 @@ export default function Reports() {
     .sort((a, b) => a.course.title.localeCompare(b.course.title) || a.person.name.localeCompare(b.person.name)), [rows])
   const staff = useMemo(() => scope.slice().sort((a, b) => a.name.localeCompare(b.name)), [scope])
   const isAdmin = user.role === 'admin'
+  const narrow = useNarrow()
 
   return (
     <div className="mx-auto max-w-6xl">
@@ -77,12 +84,12 @@ export default function Reports() {
         </div>
 
         <Card className="mt-4" title="Completion by course" sub="Share of assignments completed, per course.">
-          <div style={{ height: courseData.length * 34 + 30 }} role="img" aria-label="Bar chart of completion rate by course">
+          <div style={{ height: courseData.length * (narrow ? 46 : 34) + 30 }} role="img" aria-label="Bar chart of completion rate by course">
             <ResponsiveContainer>
               <BarChart data={courseData} layout="vertical" margin={{ top: 0, right: 24, left: 8, bottom: 0 }}>
                 <CartesianGrid stroke="#ece8e4" horizontal={false} />
                 <XAxis type="number" domain={[0, 100]} unit="%" tick={tick} />
-                <YAxis type="category" dataKey="short" width={210} tick={{ ...tick, fill: INK }} />
+                <YAxis type="category" dataKey="short" interval={0} width={narrow ? 118 : 210} tick={{ ...tick, fill: INK, fontSize: narrow ? 10 : 12 }} />
                 <Tooltip formatter={(v) => `${v}%`} />
                 <RBar dataKey="rate" name="Completion rate" fill={PURPLE} radius={[0, 6, 6, 0]} />
               </BarChart>

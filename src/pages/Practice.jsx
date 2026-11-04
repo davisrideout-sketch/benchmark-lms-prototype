@@ -16,7 +16,7 @@ export default function Practice() {
     <div className="mx-auto max-w-5xl">
       <PageTitle title="Practice Arena" sub="Role-play real conversations in a safe space. Replies are scripted for this prototype; no AI is used and nothing is sent anywhere." />
       <div className="mb-6"><AiBadge /></div>
-      <div className="grid gap-5 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
         {scenarios.map((s) => {
           const runs = practice.filter((r) => r.sid === s.id)
           const best = runs.length ? Math.max(...runs.map((r) => r.overall)) : null

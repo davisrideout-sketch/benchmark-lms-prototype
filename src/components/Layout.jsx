@@ -4,6 +4,7 @@ import { Menu, X, PanelLeftClose, PanelLeftOpen, LogOut, RotateCcw } from 'lucid
 import { useApp } from '../store.jsx'
 import { navItems } from './nav.js'
 import Wordmark from './Wordmark.jsx'
+import { StartHereButton } from './Tour.jsx'
 
 export default function Layout() {
   const { user, signOut, resetDemo } = useApp()
@@ -52,18 +53,19 @@ export default function Layout() {
       )}
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="print:hidden sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-taupe-200 bg-white/90 px-4 backdrop-blur">
-          <button aria-label="Open menu" onClick={() => setOpen(true)} className="rounded-lg p-2 hover:bg-taupe-100 md:hidden"><Menu size={22} /></button>
+        <header className="print:hidden sticky top-0 z-30 flex h-16 items-center gap-2 border-b border-taupe-200 bg-white/90 px-3 sm:gap-3 sm:px-4 backdrop-blur">
+          <button aria-label="Open menu" onClick={() => setOpen(true)} className="rounded-lg p-1.5 hover:bg-taupe-100 md:hidden"><Menu size={22} /></button>
           <span className="md:hidden"><Wordmark /></span>
           <span className="hidden rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-800 sm:inline">Prototype – demo data</span>
-          <div className="ml-auto flex items-center gap-2">
-            <button onClick={resetDemo} title="Reset demo progress" className="rounded-lg p-2 text-taupe-700 hover:bg-taupe-100"><RotateCcw size={18} /></button>
+          <div className="ml-auto flex items-center gap-1 sm:gap-2">
+            <StartHereButton compact />
+            <button onClick={resetDemo} title="Reset demo progress" className="rounded-lg p-1.5 text-taupe-700 hover:bg-taupe-100 sm:p-2"><RotateCcw size={18} /></button>
             <div className="hidden text-right leading-tight sm:block">
               <div className="text-sm font-bold">{user.name}</div>
               <div className="text-xs capitalize text-taupe-700">{user.role} · {user.office}</div>
             </div>
             <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-500 text-sm font-bold text-white">{user.initials}</span>
-            <button onClick={signOut} title="Switch demo user" className="rounded-lg p-2 text-taupe-700 hover:bg-taupe-100"><LogOut size={18} /></button>
+            <button onClick={signOut} title="Switch demo user" className="rounded-lg p-1.5 text-taupe-700 hover:bg-taupe-100 sm:p-2"><LogOut size={18} /></button>
           </div>
         </header>
         <main className="flex-1 p-4 sm:p-8"><Outlet /></main>

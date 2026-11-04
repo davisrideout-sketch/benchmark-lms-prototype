@@ -23,7 +23,7 @@ Home, For Me, Course Catalogue, Learning Paths, Video Library, Knowledge Base, P
 3. Knowledge Base & Video: searchable articles, video library
 4. Practice Arena: scenario/role-play practice exercises
 5. Reports & Admin: team/org reports with charts, user and course admin
-6. Polish & demo: achievements, accessibility, demo script, final QA
+6. Polish & demo: tour, layout fixes, DEMO.md (done)
 
 ## Commands
 `npm run dev` (port 3000), `npm run build`.

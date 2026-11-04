@@ -1,7 +1,9 @@
+import { useState } from 'react'
 import { GraduationCap, Users, ShieldCheck } from 'lucide-react'
 import { useApp } from '../store.jsx'
 import { people, demoUsers } from '../data/people.js'
 import Wordmark from '../components/Wordmark.jsx'
+import Tour, { StartHereButton, tourSeen } from '../components/Tour.jsx'
 
 const roles = [
   { key: 'learner', icon: GraduationCap, title: 'Learner', desc: 'See your own courses, deadlines and progress.' },
@@ -12,12 +14,16 @@ const roles = [
 export default function SignIn() {
   const { signIn } = useApp()
   const pick = (id) => signIn(id)
+  const [tour, setTour] = useState(() => !tourSeen())
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-brand-700 via-brand-600 to-taupe-700 px-4 py-10">
       <div className="w-full max-w-3xl rounded-3xl bg-white p-6 shadow-2xl sm:p-10">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <Wordmark />
-          <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-800">Prototype – demo data</span>
+          <div className="flex flex-wrap items-center gap-2">
+            <StartHereButton light />
+            <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-800">Prototype – demo data</span>
+          </div>
         </div>
         <h1 className="mt-8 text-2xl font-bold sm:text-3xl">Demo sign-in</h1>
         <p className="mt-2 text-taupe-700">There is no real login. Choose a fictional user to explore the prototype.</p>
@@ -38,6 +44,7 @@ export default function SignIn() {
         </div>
         <p className="mt-8 text-xs text-taupe-500">All people and data are fictional. Course content is illustrative sample material, not official Benchmark policy.</p>
       </div>
+      {tour && <Tour onClose={() => setTour(false)} />}
     </div>
   )
 }
