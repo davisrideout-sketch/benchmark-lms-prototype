@@ -18,6 +18,10 @@ export function AppProvider({ children }) {
   const [scores, setScores] = useState(() => read('blms.scores.v1', {}))
   const [favs, setFavs] = useState(() => read('blms.favs.v1', {}))
   const [enrolled, setEnrolled] = useState(() => read('blms.enrol.v1', []))
+  const [vprog, setVprog] = useState(() => read('blms.video.v1', {}))
+  const [votes, setVotes] = useState(() => read('blms.votes.v1', {}))
+  useEffect(() => write('blms.video.v1', vprog), [vprog])
+  useEffect(() => write('blms.votes.v1', votes), [votes])
   useEffect(() => write(PROG_KEY, overrides), [overrides])
   useEffect(() => write('blms.scores.v1', scores), [scores])
   useEffect(() => write('blms.favs.v1', favs), [favs])
@@ -62,7 +66,11 @@ export function AppProvider({ children }) {
     signIn: setUserId, signOut: () => setUserId(null),
     enrollments, enroll, completeModule, scores,
     favs: favs[userId] ?? [], toggleFav: (id) => toggleFav(userId, id),
-    resetDemo: () => { setOverrides({}); setScores({}); setFavs({}); setEnrolled([]) },
+    videoSecs: (id) => vprog[`${userId}:${id}`] ?? 0,
+    setVideoSecs: (id, s) => setVprog((p) => ({ ...p, [`${userId}:${id}`]: s })),
+    vote: (id) => votes[`${userId}:${id}`] ?? null,
+    setVote: (id, v) => setVotes((p) => ({ ...p, [`${userId}:${id}`]: v })),
+    resetDemo: () => { setOverrides({}); setScores({}); setFavs({}); setEnrolled([]); setVprog({}); setVotes({}) },
     people,
   }
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>
