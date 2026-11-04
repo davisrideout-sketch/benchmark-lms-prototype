@@ -1,0 +1,7 @@
+{
+  "name": "Peck project",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:22",
+  "runArgs": ["--cap-add=NET_ADMIN"],
+  "remoteUser": "node",
+  "postCreateCommand": "npm install -g @anthropic-ai/claude-code @openai/codex"
+}
