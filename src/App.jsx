@@ -17,10 +17,13 @@ import Videos from './pages/Videos.jsx'
 import VideoPlayer from './pages/VideoPlayer.jsx'
 import Practice from './pages/Practice.jsx'
 import PracticeSession from './pages/PracticeSession.jsx'
+import Reports from './pages/Reports.jsx'
+import ReportPerson from './pages/ReportPerson.jsx'
+import Admin from './pages/Admin.jsx'
 import { navItems } from './components/nav.js'
 
 const Page = ({ item }) => { const P = pages[item.path]; return P ? <P /> : <ComingSoon item={item} /> }
-const pages = { '/for-me': ForMe, '/catalogue': Catalogue, '/paths': Paths, '/achievements': Achievements, '/knowledge': Knowledge, '/videos': Videos, '/practice': Practice }
+const pages = { '/for-me': ForMe, '/catalogue': Catalogue, '/paths': Paths, '/achievements': Achievements, '/knowledge': Knowledge, '/videos': Videos, '/practice': Practice, '/reports': Reports, '/admin': Admin }
 
 export default function App() {
   const { user } = useApp()
@@ -33,6 +36,7 @@ export default function App() {
           <Route key={n.path} path={n.path}
             element={n.roles && !n.roles.includes(user.role) ? <Navigate to="/" replace /> : <Page item={n} />} />
         ))}
+        <Route path="/reports/:pid" element={user.role === 'learner' ? <Navigate to="/" replace /> : <ReportPerson />} />
         <Route path="/knowledge/:aid" element={<Article />} />
         <Route path="/practice/:sid" element={<PracticeSession />} />
         <Route path="/videos/:vid" element={<VideoPlayer />} />

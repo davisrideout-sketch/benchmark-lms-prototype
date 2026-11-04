@@ -28,13 +28,16 @@ export function AppProvider({ children }) {
   useEffect(() => write('blms.scores.v1', scores), [scores])
   useEffect(() => write('blms.favs.v1', favs), [favs])
   useEffect(() => write('blms.enrol.v1', enrolled), [enrolled])
+  const [assigned, setAssigned] = useState(() => read('blms.assign.v1', []))
+  useEffect(() => write('blms.assign.v1', assigned), [assigned])
 
   const enrollments = useMemo(() => {
-    const extra = enrolled.map((k) => {
-      const [u, c] = k.split(':')
-      return { userId: u, courseId: c, completedModules: 0, dueDate: iso(TODAY + 30 * 86400000), completedAt: null, lastActivity: null, quizScore: null, assignedBy: u }
-    })
-    return [...baseEnrollments, ...extra].map((e) => {
+    const blank = { completedModules: 0, completedAt: null, lastActivity: null, quizScore: null }
+    const fromAssign = assigned.map((a) => ({ ...blank, ...a }))
+    const fromSelf = enrolled
+      .filter((k) => !assigned.some((a) => `${a.userId}:${a.courseId}` === k))
+      .map((k) => { const [u, c] = k.split(':'); return { ...blank, userId: u, courseId: c, dueDate: iso(TODAY + 30 * 86400000), assignedBy: u } })
+    return [...baseEnrollments, ...fromAssign, ...fromSelf].map((e) => {
       const o = overrides[`${e.userId}:${e.courseId}`]
       if (o === undefined) return e
       const n = courseById(e.courseId).modules.length
@@ -44,12 +47,22 @@ export function AppProvider({ children }) {
       return { ...e, completedModules: done, lastActivity: iso(TODAY),
         completedAt: done === n ? iso(TODAY) : null, quizScore: done === n ? avg : null }
     })
-  }, [overrides, enrolled, scores])
+  }, [overrides, enrolled, assigned, scores])
 
   const enroll = useCallback((uid, cid) => {
     if (baseEnrollments.some((e) => e.userId === uid && e.courseId === cid)) return
+    if (assigned.some((a) => a.userId === uid && a.courseId === cid)) return
     setEnrolled((l) => (l.includes(`${uid}:${cid}`) ? l : [...l, `${uid}:${cid}`]))
-  }, [])
+  }, [assigned])
+
+  // Admin: assign a course to many people. Skips anyone who already has it. Returns { added, skipped }.
+  const assignCourse = useCallback((userIds, cid, dueDate, byId) => {
+    const has = (u) => baseEnrollments.some((e) => e.userId === u && e.courseId === cid)
+      || assigned.some((a) => a.userId === u && a.courseId === cid) || enrolled.includes(`${u}:${cid}`)
+    const fresh = userIds.filter((u) => !has(u))
+    if (fresh.length) setAssigned((l) => [...l, ...fresh.map((u) => ({ userId: u, courseId: cid, dueDate, assignedBy: byId }))])
+    return { added: fresh.length, skipped: userIds.length - fresh.length }
+  }, [assigned, enrolled])
 
   const completeModule = useCallback((uid, cid, i, pct) => {
     const k = `${uid}:${cid}:${i}`
@@ -66,7 +79,7 @@ export function AppProvider({ children }) {
   const value = {
     user: userId ? personById(userId) : null,
     signIn: setUserId, signOut: () => setUserId(null),
-    enrollments, enroll, completeModule, scores,
+    enrollments, enroll, assignCourse, completeModule, scores,
     favs: favs[userId] ?? [], toggleFav: (id) => toggleFav(userId, id),
     videoSecs: (id) => vprog[`${userId}:${id}`] ?? 0,
     setVideoSecs: (id, s) => setVprog((p) => ({ ...p, [`${userId}:${id}`]: s })),
@@ -74,7 +87,7 @@ export function AppProvider({ children }) {
     setVote: (id, v) => setVotes((p) => ({ ...p, [`${userId}:${id}`]: v })),
     practice: practice[userId] ?? [],
     addPractice: (r) => setPractice((p) => ({ ...p, [userId]: [r, ...(p[userId] ?? [])].slice(0, 30) })),
-    resetDemo: () => { setPractice({}); setOverrides({}); setScores({}); setFavs({}); setEnrolled([]); setVprog({}); setVotes({}) },
+    resetDemo: () => { setPractice({}); setOverrides({}); setScores({}); setFavs({}); setEnrolled([]); setAssigned([]); setVprog({}); setVotes({}) },
     people,
   }
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>

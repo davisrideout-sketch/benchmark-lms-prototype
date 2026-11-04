@@ -9,6 +9,6 @@ export const navItems = [
   { path: '/knowledge', label: 'Knowledge Base', icon: Library, phase: 3, blurb: 'Searchable guides, templates and process notes.' },
   { path: '/practice', label: 'Practice Arena', icon: Target, phase: 4, blurb: 'Scenario-based practice for owner conversations, objections and negotiation.' },
   { path: '/achievements', label: 'Achievements', icon: Award, phase: 6, blurb: 'Badges, certificates and learning streaks.' },
-  { path: '/reports', label: 'Reports', icon: BarChart3, phase: 5, roles: ['manager', 'admin'], blurb: 'Completion, scores and overdue learning for teams and offices.' },
+  { path: '/reports', label: 'Reports', icon: BarChart3, phase: 5, roles: ['manager', 'admin'], blurb: 'Training insights: completion, scores and overdue learning for teams and offices.' },
   { path: '/admin', label: 'Admin', icon: Settings, phase: 5, roles: ['admin'], blurb: 'Manage users, courses, assignments and content.' },
 ]
